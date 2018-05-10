@@ -122,19 +122,8 @@ class LiUserTable extends Component {
     }
 
     doAdvancedSearch() {
-        var countSearchRow = this.props.users.countAdvSearchComp;
-        var searchTextName = "";
-        var searchTextCode = "";
-        var searchTextStatus = "";
-        var searchTextCompany = "";
-        var searchTextDept = "";
-        var searchTextEmail  = "";
-        var searchTextExtension = "";
-        var searchTextAcStatus = "";
-        var inputComp = [];
-        var selectComp = [];
-        var statusComp = [];
-        var accStatusComp = [];
+        
+        var matchedUsersArr = [],countSearchRow = this.props.users.countAdvSearchComp,searchTextName = "",searchTextCode = "",searchTextStatus = "",searchTextCompany = "",searchTextDept = "",searchTextEmail  = "",searchTextExtension = "",searchTextAcStatus = "",inputComp = [],selectComp = [],statusComp = [],accStatusComp = [];
 
         inputComp = (this.props.users.inputField);
         selectComp = (this.props.users.selectField);
@@ -147,7 +136,6 @@ class LiUserTable extends Component {
         {
             var searchField = (selectComp['search_combo_'+i] !== undefined) ? this.props.users.selectField['search_combo_' + i].compValue : "";
             var searchText = (inputComp['search_input_'+i] !== undefined) ? this.props.users.inputField['search_input_' + i].inputValue : "";
-
             var searchType = this.props.users.selectedOption;
 
             if(searchField === "Full Name")
@@ -185,52 +173,13 @@ class LiUserTable extends Component {
                 searchTextAcStatus =  (accStatusComp['ac_stat_search_combo_'+ i] !== undefined) ? this.props.users.accStatusCombo['ac_stat_search_combo_'+ i].compValue : "";
             }
         }
-
-        var matchedUsersArr = [];
-
         this.props.users.data[0].map((usr) => {
-            if(searchType === 1) // AND
-            {
-                if(usr.value.full_name.toLowerCase().indexOf(searchTextName.toLowerCase()) !== -1
-                && usr.value.code.toLowerCase().indexOf(searchTextCode.toLowerCase()) !== -1
-                && usr.value.status.toLowerCase().indexOf(searchTextStatus.toLowerCase()) !== -1
-                && usr.value.company_name.toLowerCase().indexOf(searchTextCompany.toLowerCase()) !== -1
-                && usr.value.dept.toLowerCase().indexOf(searchTextDept.toLowerCase()) !== -1
-                && usr.value.email.toLowerCase().indexOf(searchTextEmail.toLowerCase()) !== -1
-                && usr.value.extn.toLowerCase().indexOf(searchTextExtension.toLowerCase()) !== -1
-                && usr.value.ac_status.toString().toLowerCase().indexOf(searchTextAcStatus) !== -1
-                )
-                {
-                    matchedUsersArr.push(usr);
-                }
-            }
-            else // OR
-            {
-                if(
-                    (searchTextName !== "" && usr.value.full_name.toLowerCase().indexOf(searchTextName.toLowerCase()) !== -1)
-                    || (searchTextCode !== "" && usr.value.code.toLowerCase().indexOf(searchTextCode.toLowerCase()) !== -1)
-                    || (searchTextStatus !== "" && usr.value.status.toLowerCase().indexOf(searchTextStatus.toLowerCase()) !== -1)
-                    || (searchTextCompany !== "" && usr.value.company_name.toLowerCase().indexOf(searchTextCompany.toLowerCase()) !== -1)
-                    || (searchTextDept !== "" && usr.value.dept.toLowerCase().indexOf(searchTextDept.toLowerCase()) !== -1)
-                    || (searchTextEmail !== "" && usr.value.email.toLowerCase().indexOf(searchTextEmail.toLowerCase()) !== -1)
-                    || (searchTextExtension !== "" && usr.value.extn.toLowerCase().indexOf(searchTextExtension.toLowerCase()) !== -1)
-                    || (searchTextAcStatus !== "" && usr.value.ac_status.toString().toLowerCase().indexOf(searchTextAcStatus) !== -1)
-                    )
-                    {
-                        matchedUsersArr.push(usr);
-                    }
-            }
-
+            // Search Type 1 - AND 
+            searchType === 1 ? (usr.value.full_name.toLowerCase().indexOf(searchTextName.toLowerCase()) !== -1 && usr.value.code.toLowerCase().indexOf(searchTextCode.toLowerCase()) !== -1 && usr.value.status.toLowerCase().indexOf(searchTextStatus.toLowerCase()) !== -1 && usr.value.company_name.toLowerCase().indexOf(searchTextCompany.toLowerCase()) !== -1 && usr.value.dept.toLowerCase().indexOf(searchTextDept.toLowerCase()) !== -1 && usr.value.email.toLowerCase().indexOf(searchTextEmail.toLowerCase()) !== -1 && usr.value.extn.toLowerCase().indexOf(searchTextExtension.toLowerCase()) !== -1 && usr.value.ac_status.toString().toLowerCase().indexOf(searchTextAcStatus) !== -1)?matchedUsersArr.push(usr) : "":((searchTextName !== "" && usr.value.full_name.toLowerCase().indexOf(searchTextName.toLowerCase()) !== -1) || (searchTextCode !== "" && usr.value.code.toLowerCase().indexOf(searchTextCode.toLowerCase()) !== -1) || (searchTextStatus !== "" && usr.value.status.toLowerCase().indexOf(searchTextStatus.toLowerCase()) !== -1)|| (searchTextCompany !== "" && usr.value.company_name.toLowerCase().indexOf(searchTextCompany.toLowerCase()) !== -1)|| (searchTextDept !== "" && usr.value.dept.toLowerCase().indexOf(searchTextDept.toLowerCase()) !== -1)|| (searchTextEmail !== "" && usr.value.email.toLowerCase().indexOf(searchTextEmail.toLowerCase()) !== -1)|| (searchTextExtension !== "" && usr.value.extn.toLowerCase().indexOf(searchTextExtension.toLowerCase()) !== -1)|| (searchTextAcStatus !== "" && usr.value.ac_status.toString().toLowerCase().indexOf(searchTextAcStatus) !== -1) )? matchedUsersArr.push(usr):""
             return false;
         });        
-
         //console.log(matchedUsersArr,'shyam132');
-        if(matchedUsersArr.length > 0){
-            this.props.liSetSearchData(matchedUsersArr);
-        }
-        else{
-            this.props.liSetSearchData(this.convertObjectToArray(this.props.users.dummyUserArr));
-        }
+         matchedUsersArr.length > 0 ?this.props.liSetSearchData(matchedUsersArr):this.props.liSetSearchData(this.convertObjectToArray(this.props.users.dummyUserArr));
     }
 
     handleInputChange(event) {
@@ -311,11 +260,8 @@ class LiUserTable extends Component {
 
                         <span className="LiUserTable_searchSpan3">
                         {
-                        this.props.users.selectField[comboID + cntr] !== undefined
-                        ?
-
-                        this.props.users.selectField[comboID + cntr].compValue === "Status"
-                        ?
+                        this.props.users.selectField[comboID + cntr] !== undefined ?
+                        this.props.users.selectField[comboID + cntr].compValue === "Status" ?
                         <select 
                             name="status"
                             id={"stat_" + comboID + cntr}
@@ -327,8 +273,7 @@ class LiUserTable extends Component {
                             <option value="Offline">Offline</option>
                         </select>
                         :
-                        this.props.users.selectField[comboID + cntr].compValue === "Acnt Status"
-                        ?
+                        this.props.users.selectField[comboID + cntr].compValue === "Acnt Status" ?
                         <select
                             name="acnt_status"
                             id={"ac_stat_" + comboID + cntr}
@@ -377,32 +322,18 @@ class LiUserTable extends Component {
                                                                         var matchedUsersArr = [];
 
                                                                         this.props.users.data[0].map((usr) => {
-                                                                            if(usr.value.full_name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                            || usr.value.code.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                            || usr.value.status.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                            || usr.value.dept.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                            || usr.value.email.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                            || usr.value.extn.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                            || usr.value.ac_status.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-                                                                        ) {
+                                                                            if(usr.value.full_name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || usr.value.code.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || usr.value.status.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || usr.value.dept.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || usr.value.email.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || usr.value.extn.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || usr.value.ac_status.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1) {
                                                                             matchedUsersArr.push(usr);
                                                                         }
                                                                             return false;
                                                                         });
 
-                                                                        if(matchedUsersArr.length > 0){
-                                                                            this.props.liSetSearchData(matchedUsersArr);
-                                                                        }
-                                                                        else{
-                                                                            this.props.liSetSearchData(this.convertObjectToArray(this.props.users.dummyUserArr));
-                                                                        }
+                                                                        matchedUsersArr.length > 0 ? this.props.liSetSearchData(matchedUsersArr) : this.props.liSetSearchData(this.convertObjectToArray(this.props.users.dummyUserArr));
+                                                                        
                                                                     }
                                                         }
-                                            style={{
-                                                        margin: '0 auto',
-                                                        maxWidth: 500,
-                                                        boxShadow: '2px 2px 2px 2px #cccccc'
-                                                    }} />
+                                            style={{margin: '0 auto',maxWidth: 500, boxShadow: '2px 2px 2px 2px #cccccc'}} 
+                                                    />
                         </div>
                         <div className="LiUserTable_advanced_search_area">
                             {
@@ -418,9 +349,7 @@ class LiUserTable extends Component {
                                 <a style={{cursor: 'pointer', color: 'blue'}} onClick={this.handleAddMore.bind(this)}>Add</a>
                                 &#160;&#160;&#160;&#160;
                                 {
-                                this.props.users.countAdvSearchComp > 0
-                                ? <a style={{cursor: 'pointer', color: 'blue'}} onClick={this.handleDeleteRow.bind(this)}>Delete</a>
-                                : <a style={{cursor: 'pointer', color: 'grey'}} onClick={this.handleDeleteRow.bind(this)}>Delete</a>
+                                this.props.users.countAdvSearchComp > 0 ? <a style={{cursor: 'pointer', color: 'blue'}} onClick={this.handleDeleteRow.bind(this)}>Delete</a> : <a style={{cursor: 'pointer', color: 'grey'}} onClick={this.handleDeleteRow.bind(this)}>Delete</a>
                                 }
 
                                 <div>&#160;</div>
@@ -461,9 +390,7 @@ class LiUserTable extends Component {
                            this.props.users.pageUserArr[0].map((usr) => {
                                    return (
                                            <TableRow className="LiUserTable_contentRow" key={usr.key} /*onClick={()=> { let id = usr.key; this.handleToggle.bind(this, id) }} */ >
-                                               <TableRowColumn className="LiUserTable_rowColumn" style={{textAlign: 'center'}}>
-                                                   {<Avatar src={"../" + usr.value.profile_pix} size={40} style={avatarStyle} />}
-                                               </TableRowColumn>
+                                               <TableRowColumn className="LiUserTable_rowColumn" style={{textAlign: 'center'}}>{<Avatar src={"../" + usr.value.profile_pix} size={40} style={avatarStyle} />}</TableRowColumn>
                                                <TableRowColumn className="LiUserTable_rowColumn" style={{}}>{ usr.value.full_name }</TableRowColumn>
                                                <TableRowColumn className="LiUserTable_rowColumn" style={{}}>{ usr.value.code }</TableRowColumn>
                                                <TableRowColumn className="LiUserTable_rowColumn" style={{}}>{ usr.value.status }</TableRowColumn>
@@ -471,11 +398,7 @@ class LiUserTable extends Component {
                                                <TableRowColumn className="LiUserTable_rowColumn" style={{}}>{ usr.value.extn }</TableRowColumn>
                                                <TableRowColumn className="LiUserTable_rowColumn" style={{}}>{ usr.value.email }</TableRowColumn>
                                                <TableRowColumn className="LiUserTable_rowColumn" style={{}}>{ usr.value.ac_status === true ? "Enabled" : "Disabled" }</TableRowColumn>
-                                               <TableRowColumn className="LiUserTable_rowColumn" style={{textAlign: 'left'}}>
-                                                   <List>
-                                                       <ListItem rightIconButton={iconMenu(usr.key)} />
-                                                   </List>
-                                               </TableRowColumn>
+                                               <TableRowColumn className="LiUserTable_rowColumn" style={{textAlign: 'left'}}><List><ListItem rightIconButton={iconMenu(usr.key)} /></List></TableRowColumn>
                                            </TableRow>
                                        );
                            })
